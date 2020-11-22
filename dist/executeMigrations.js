@@ -49,6 +49,26 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("./utils");
 var faunadb_1 = require("faunadb");
+var checkinCompletedMigrations = function (completedMigrations, operation, client) {
+    if (operation === void 0) { operation = "up"; }
+    return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(operation === "up" && completedMigrations.length != 0)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, client.query(faunadb_1.query.Create(faunadb_1.query.Collection("Migration"), {
+                            data: {
+                                migrations: completedMigrations.map(function (migration) { return migration.label; })
+                            }
+                        }))];
+                case 1:
+                    _a.sent();
+                    _a.label = 2;
+                case 2: return [2 /*return*/];
+            }
+        });
+    });
+};
 var executeMigrations = function (migrations, operation, _a) {
     if (operation === void 0) { operation = "up"; }
     var client = _a.client, queryBuilder = _a.queryBuilder, migrationId = _a.migrationId;
@@ -65,7 +85,7 @@ var executeMigrations = function (migrations, operation, _a) {
                                 currentMigration = null;
                                 _a.label = 1;
                             case 1:
-                                _a.trys.push([1, 7, , 8]);
+                                _a.trys.push([1, 5, , 6]);
                                 return [4 /*yield*/, utils_1.asyncForEach(migrations, function (migration) { return __awaiter(_this, void 0, void 0, function () {
                                         return __generator(this, function (_a) {
                                             switch (_a.label) {
@@ -81,29 +101,22 @@ var executeMigrations = function (migrations, operation, _a) {
                                     }); })];
                             case 2:
                                 _a.sent();
-                                if (!(operation === "up")) return [3 /*break*/, 4];
-                                return [4 /*yield*/, client.query(faunadb_1.query.Create(faunadb_1.query.Collection("Migration"), {
-                                        data: {
-                                            migrations: completedMigrations.map(function (migration) { return migration.label; })
-                                        }
-                                    }))];
+                                checkinCompletedMigrations(completedMigrations, operation, client);
+                                if (!(operation === "down" && migrationId)) return [3 /*break*/, 4];
+                                return [4 /*yield*/, client.query(faunadb_1.query.Delete(faunadb_1.query.Ref(faunadb_1.query.Collection("Migration"), migrationId)))];
                             case 3:
                                 _a.sent();
                                 _a.label = 4;
                             case 4:
-                                if (!(operation === "down" && migrationId)) return [3 /*break*/, 6];
-                                return [4 /*yield*/, client.query(faunadb_1.query.Delete(faunadb_1.query.Ref(faunadb_1.query.Collection("Migration"), migrationId)))];
-                            case 5:
-                                _a.sent();
-                                _a.label = 6;
-                            case 6:
                                 resolve(completedMigrations);
-                                return [3 /*break*/, 8];
-                            case 7:
+                                return [3 /*break*/, 6];
+                            case 5:
                                 error_1 = _a.sent();
+                                console.error(error_1);
+                                checkinCompletedMigrations(completedMigrations, operation, client);
                                 reject(__assign({}, error_1, { migration: currentMigration }));
-                                return [3 /*break*/, 8];
-                            case 8: return [2 /*return*/];
+                                return [3 /*break*/, 6];
+                            case 6: return [2 /*return*/];
                         }
                     });
                 }); })];

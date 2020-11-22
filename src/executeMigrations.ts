@@ -8,6 +8,22 @@ type ExecuteMigrationsConfig = {
   migrationId?: string;
 };
 
+const checkinCompletedMigrations = async (
+  completedMigrations: Migration[],
+  operation: "down" | "up" = "up",
+  client: Client
+): Promise<void> => {
+  if (operation === "up" && completedMigrations.length != 0) {
+    await client.query(
+      q.Create(q.Collection("Migration"), {
+        data: {
+          migrations: completedMigrations.map(migration => migration.label)
+        }
+      })
+    );
+  }
+}
+
 const executeMigrations = async (
   migrations: Migration[],
   operation: "down" | "up" = "up",
@@ -24,6 +40,8 @@ const executeMigrations = async (
         completedMigrations.push(migration);
       });
 
+      checkinCompletedMigrations(completedMigrations, operation, client);
+
       if (operation === "down" && migrationId) {
         await client.query(
           q.Delete(q.Ref(q.Collection("Migration"), migrationId))
@@ -33,21 +51,12 @@ const executeMigrations = async (
       resolve(completedMigrations);
     } catch (error) {
       console.error(error);
+      checkinCompletedMigrations(completedMigrations, operation, client);
 
       reject({
         ...error,
         migration: currentMigration
       });
-    }
-
-    if (operation === "up" && completedMigrations.length != 0) {
-      await client.query(
-        q.Create(q.Collection("Migration"), {
-          data: {
-            migrations: completedMigrations.map(migration => migration.label)
-          }
-        })
-      );
     }
   });
 
