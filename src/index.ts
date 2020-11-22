@@ -23,9 +23,7 @@ const secretEnvVariableName = program.secretEnvVariableName || 'FAUNADB_SECRET';
 let secret = '';
 
 if (program.envFile) {
-  const envResult = require('dotenv').config({ path: program.envFile });
-  console.log(envResult);
-  
+  const envResult = require('dotenv').config({ path: program.envFile });  
 
   if(envResult.error) {
     throw envResult.error;
@@ -43,8 +41,6 @@ const faunaDbConfig: faunadb.ClientConfig = {
 if (program.domain) faunaDbConfig.domain = program.domain;
 if (program.port) faunaDbConfig.port = program.port;
 if (program.scheme) faunaDbConfig.scheme = program.scheme;
-
-console.log(faunaDbConfig, program.migrationFolder, program.secretEnvVariableName, process.env);
 
 const client = new faunadb.Client(faunaDbConfig);
 
