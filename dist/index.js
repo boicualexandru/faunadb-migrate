@@ -19,12 +19,26 @@ commander_1.default.version("0.0.1").description("Fauna migrate tool")
     .option('--port <value>', 'Port')
     .option('--scheme <value>', 'Scheme')
     .option('--migrationFolder <value>', 'Migrations folder')
+    .option('--envFile <value>', 'Env file path')
     .option('--secretEnvVariableName <value>', 'Env variable name for FaunaDB Secret');
 commander_1.default.parse(process.argv);
 var MIGRATION_FOLDER = commander_1.default.migrationFolder || "./migrations";
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
+var secretEnvVariableName = commander_1.default.secretEnvVariableName || 'FAUNADB_SECRET';
+var secret = '';
+if (commander_1.default.envFile) {
+    var envResult = require('dotenv').config({ path: commander_1.default.envFile });
+    console.log(envResult);
+    if (envResult.error) {
+        throw envResult.error;
+    }
+    secret = String(envResult.parsed[secretEnvVariableName]);
+}
+else {
+    secret = String(process.env[secretEnvVariableName]);
+}
 var faunaDbConfig = {
-    secret: String(process.env[commander_1.default.secretEnvVariableName || 'FAUNADB_SECRET'])
+    secret: secret
 };
 if (commander_1.default.domain)
     faunaDbConfig.domain = commander_1.default.domain;
