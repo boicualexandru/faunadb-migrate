@@ -32,7 +32,7 @@ if (commander_1.default.port)
     faunaDbConfig.port = commander_1.default.port;
 if (commander_1.default.scheme)
     faunaDbConfig.scheme = commander_1.default.scheme;
-console.log(faunaDbConfig, commander_1.default.migrationFolder, commander_1.default.secretEnvVariableName);
+console.log(faunaDbConfig, commander_1.default.migrationFolder, commander_1.default.secretEnvVariableName, process.env);
 var client = new faunadb_1.default.Client(faunaDbConfig);
 commander_1.default
     .command("setup")

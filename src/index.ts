@@ -25,7 +25,7 @@ if (program.domain) faunaDbConfig.domain = program.domain;
 if (program.port) faunaDbConfig.port = program.port;
 if (program.scheme) faunaDbConfig.scheme = program.scheme;
 
-console.log(faunaDbConfig, program.migrationFolder, program.secretEnvVariableName);
+console.log(faunaDbConfig, program.migrationFolder, program.secretEnvVariableName, process.env);
 
 const client = new faunadb.Client(faunaDbConfig);
 
