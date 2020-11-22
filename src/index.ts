@@ -10,12 +10,12 @@ import rollback from "./rollback";
 
 const args = minimist(process.argv.slice(2));
 
-const MIGRATION_FOLDER = args['migration_folder'] ?? "./migrations";
+const MIGRATION_FOLDER = args['migration_folder'] || "./migrations";
 
 console.log(process.argv);
 
 const faunaDbConfig: faunadb.ClientConfig = {
-  secret: String(process.env[args['secret_env_variable_name'] ?? 'FAUNADB_SECRET'])
+  secret: String(process.env[args['secret_env_variable_name'] || 'FAUNADB_SECRET'])
 };
 
 if (args['domain']) faunaDbConfig['domain'] = args['domain'];

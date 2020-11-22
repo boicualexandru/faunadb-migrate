@@ -16,11 +16,11 @@ exports.migrate = migrate_1.default;
 var rollback_1 = __importDefault(require("./rollback"));
 exports.rollback = rollback_1.default;
 var args = minimist_1.default(process.argv.slice(2));
-var MIGRATION_FOLDER = args['migration_folder'] ?  ? "./migrations" :  : ;
+var MIGRATION_FOLDER = args['migration_folder'] || "./migrations";
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
 console.log(process.argv);
 var faunaDbConfig = {
-    secret: String(process.env[args['secret_env_variable_name'] ?  ? 'FAUNADB_SECRET' :  : ])
+    secret: String(process.env[args['secret_env_variable_name'] || 'FAUNADB_SECRET'])
 };
 if (args['domain'])
     faunaDbConfig['domain'] = args['domain'];
