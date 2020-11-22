@@ -13,6 +13,7 @@ program.version("0.0.1").description("Fauna migrate tool")
   .option('--scheme', 'Scheme')
   .option('--migrationFolder', 'Migrations folder')
   .option('--secretEnvVariableName', 'Env variable name for FaunaDB Secret');
+program.parse(process.argv);
   
 const MIGRATION_FOLDER = program.migrationFolder || "./migrations";
 
@@ -57,5 +58,3 @@ program
   .command("rollback")
   .description("Run rollback")
   .action(() => rollback(MIGRATION_FOLDER, client));
-
-program.parse(process.argv);

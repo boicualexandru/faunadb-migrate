@@ -20,6 +20,7 @@ commander_1.default.version("0.0.1").description("Fauna migrate tool")
     .option('--scheme', 'Scheme')
     .option('--migrationFolder', 'Migrations folder')
     .option('--secretEnvVariableName', 'Env variable name for FaunaDB Secret');
+commander_1.default.parse(process.argv);
 var MIGRATION_FOLDER = commander_1.default.migrationFolder || "./migrations";
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
 var faunaDbConfig = {
@@ -51,4 +52,3 @@ commander_1.default
     .command("rollback")
     .description("Run rollback")
     .action(function () { return rollback_1.default(MIGRATION_FOLDER, client); });
-commander_1.default.parse(process.argv);
