@@ -24,16 +24,6 @@ const executeMigrations = async (
         completedMigrations.push(migration);
       });
 
-      if (operation === "up") {
-        await client.query(
-          q.Create(q.Collection("Migration"), {
-            data: {
-              migrations: completedMigrations.map(migration => migration.label)
-            }
-          })
-        );
-      }
-
       if (operation === "down" && migrationId) {
         await client.query(
           q.Delete(q.Ref(q.Collection("Migration"), migrationId))
@@ -42,10 +32,22 @@ const executeMigrations = async (
 
       resolve(completedMigrations);
     } catch (error) {
+      console.error(error);
+
       reject({
         ...error,
         migration: currentMigration
       });
+    }
+
+    if (operation === "up" && completedMigrations.length != 0) {
+      await client.query(
+        q.Create(q.Collection("Migration"), {
+          data: {
+            migrations: completedMigrations.map(migration => migration.label)
+          }
+        })
+      );
     }
   });
 
