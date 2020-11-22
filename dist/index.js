@@ -6,7 +6,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var commander_1 = __importDefault(require("commander"));
 var faunadb_1 = __importDefault(require("faunadb"));
-var minimist_1 = __importDefault(require("minimist"));
 var setupMigrations_1 = __importDefault(require("./setupMigrations"));
 exports.setupMigrations = setupMigrations_1.default;
 var createMigration_1 = __importDefault(require("./createMigration"));
@@ -15,21 +14,24 @@ var migrate_1 = __importDefault(require("./migrate"));
 exports.migrate = migrate_1.default;
 var rollback_1 = __importDefault(require("./rollback"));
 exports.rollback = rollback_1.default;
-var args = minimist_1.default(process.argv.slice(2));
-var MIGRATION_FOLDER = args['migration_folder'] || "./migrations";
+commander_1.default.version("0.0.1").description("Fauna migrate tool")
+    .option('--domain', 'Domain')
+    .option('--port', 'Port')
+    .option('--scheme', 'Scheme')
+    .option('--migrationFolder', 'Migrations folder')
+    .option('--secretEnvVariableName', 'Env variable name for FaunaDB Secret');
+var MIGRATION_FOLDER = commander_1.default.migrationFolder || "./migrations";
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
-console.log(process.argv);
 var faunaDbConfig = {
-    secret: String(process.env[args['secret_env_variable_name'] || 'FAUNADB_SECRET'])
+    secret: String(process.env[commander_1.default.secretEnvVariableName || 'FAUNADB_SECRET'])
 };
-if (args['domain'])
-    faunaDbConfig['domain'] = args['domain'];
-if (args['port'])
-    faunaDbConfig['port'] = args['port'];
-if (args['scheme'])
-    faunaDbConfig['scheme'] = args['scheme'];
+if (commander_1.default.domain)
+    faunaDbConfig.domain = commander_1.default.domain;
+if (commander_1.default.port)
+    faunaDbConfig.port = commander_1.default.port;
+if (commander_1.default.scheme)
+    faunaDbConfig.scheme = commander_1.default.scheme;
 var client = new faunadb_1.default.Client(faunaDbConfig);
-commander_1.default.version("0.0.1").description("Fauna migrate tool");
 commander_1.default
     .command("setup")
     .description("Setup migrations")

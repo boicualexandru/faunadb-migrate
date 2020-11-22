@@ -2,25 +2,27 @@
 
 import program from "commander";
 import faunadb from "faunadb";
-import minimist from 'minimist';
 import setupMigrations from "./setupMigrations";
 import createMigration from "./createMigration";
 import migrate from "./migrate";
 import rollback from "./rollback";
 
-const args = minimist(process.argv.slice(2));
-
-const MIGRATION_FOLDER = args['migration_folder'] || "./migrations";
-
-console.log(process.argv);
+program.version("0.0.1").description("Fauna migrate tool")
+  .option('--domain', 'Domain')
+  .option('--port', 'Port')
+  .option('--scheme', 'Scheme')
+  .option('--migrationFolder', 'Migrations folder')
+  .option('--secretEnvVariableName', 'Env variable name for FaunaDB Secret');
+  
+const MIGRATION_FOLDER = program.migrationFolder || "./migrations";
 
 const faunaDbConfig: faunadb.ClientConfig = {
-  secret: String(process.env[args['secret_env_variable_name'] || 'FAUNADB_SECRET'])
+  secret: String(process.env[program.secretEnvVariableName || 'FAUNADB_SECRET'])
 };
 
-if (args['domain']) faunaDbConfig['domain'] = args['domain'];
-if (args['port']) faunaDbConfig['port'] = args['port'];
-if (args['scheme']) faunaDbConfig['scheme'] = args['scheme'];
+if (program.domain) faunaDbConfig.domain = program.domain;
+if (program.port) faunaDbConfig.port = program.port;
+if (program.scheme) faunaDbConfig.scheme = program.scheme;
 
 const client = new faunadb.Client(faunaDbConfig);
 
@@ -31,8 +33,6 @@ export {
   rollback,
   MIGRATION_FOLDER
 };
-
-program.version("0.0.1").description("Fauna migrate tool");
 
 program
   .command("setup")
