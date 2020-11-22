@@ -20,7 +20,7 @@ var MIGRATION_FOLDER = args['migration_folder'] ?  ? "./migrations" :  : ;
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
 console.log(args);
 var faunaDbConfig = {
-    secret: String(process.env.FAUNADB_SECRET)
+    secret: String(process.env[args['secret_env_variable_name'] ?  ? 'FAUNADB_SECRET' :  : ])
 };
 if (args['domain'])
     faunaDbConfig['domain'] = args['domain'];
