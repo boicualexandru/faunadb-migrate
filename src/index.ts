@@ -12,7 +12,7 @@ const args = minimist(process.argv.slice(2));
 
 const MIGRATION_FOLDER = args['migration_folder'] ?? "./migrations";
 
-console.log(args);
+console.log(process.argv);
 
 const faunaDbConfig: faunadb.ClientConfig = {
   secret: String(process.env[args['secret_env_variable_name'] ?? 'FAUNADB_SECRET'])
