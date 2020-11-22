@@ -36,6 +36,7 @@ else {
 }
 var MIGRATION_FOLDER = commander_1.default.migrationFolder || envConfig['FAUNADB_MIGRATION_FOLDER'] || "./migrations";
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
+console.log(commander_1.default.migrationFolder, envConfig['FAUNADB_MIGRATION_FOLDER'], MIGRATION_FOLDER);
 var faunaDbConfig = {
     secret: envConfig[secretVar],
 };
@@ -48,7 +49,6 @@ if (port)
 var scheme = commander_1.default.scheme || envConfig['FAUNADB_SCHEME'];
 if (scheme)
     faunaDbConfig.scheme = String(scheme);
-console.log(faunaDbConfig);
 var client = new faunadb_1.default.Client(faunaDbConfig);
 commander_1.default
     .command("setup")

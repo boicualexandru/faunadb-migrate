@@ -31,6 +31,7 @@ if (program.envFile) {
 }
 
 const MIGRATION_FOLDER = program.migrationFolder || envConfig['FAUNADB_MIGRATION_FOLDER']  || "./migrations";
+console.log(program.migrationFolder, envConfig['FAUNADB_MIGRATION_FOLDER'], MIGRATION_FOLDER);
 
 const faunaDbConfig: faunadb.ClientConfig = {
   secret: envConfig[secretVar],
@@ -44,9 +45,6 @@ if (port) faunaDbConfig.port = parseInt(port);
 
 const scheme = program.scheme || envConfig['FAUNADB_SCHEME'];
 if (scheme) faunaDbConfig.scheme = String(scheme) as "http" | "https" | undefined;
-
-console.log(faunaDbConfig);
-
 
 const client = new faunadb.Client(faunaDbConfig);
 
