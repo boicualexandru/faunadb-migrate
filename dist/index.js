@@ -22,29 +22,32 @@ commander_1.default.version("0.0.1").description("Fauna migrate tool")
     .option('--envFile <value>', 'Env file path')
     .option('--secretEnvVariableName <value>', 'Env variable name for FaunaDB Secret');
 commander_1.default.parse(process.argv);
-var MIGRATION_FOLDER = commander_1.default.migrationFolder || "./migrations";
-exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
 var secretEnvVariableName = commander_1.default.secretEnvVariableName || 'FAUNADB_SECRET';
-var secret = '';
+var envConfig;
 if (commander_1.default.envFile) {
     var envResult = require('dotenv').config({ path: commander_1.default.envFile });
     if (envResult.error) {
         throw envResult.error;
     }
-    secret = String(envResult.parsed[secretEnvVariableName]);
+    envConfig = envResult.parsed;
+    // secret = String(envResult.parsed[secretEnvVariableName]);
 }
 else {
-    secret = String(process.env[secretEnvVariableName]);
+    envConfig = process.env;
+    // secret = String(process.env[secretEnvVariableName]);
 }
+var MIGRATION_FOLDER = commander_1.default.migrationFolder || envConfig['FAUNADB_MIGRATION_FOLDER'] || "./migrations";
+exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
 var faunaDbConfig = {
-    secret: secret
+    secret: envConfig[secretEnvVariableName],
+    domain: commander_1.default.domain || envConfig['FAUNADB_DOMAIN'],
+    port: commander_1.default.port || envConfig['FAUNADB_PORT'],
+    scheme: commander_1.default.scheme || envConfig['FAUNADB_SCHEME'],
 };
-if (commander_1.default.domain)
-    faunaDbConfig.domain = commander_1.default.domain;
-if (commander_1.default.port)
-    faunaDbConfig.port = commander_1.default.port;
-if (commander_1.default.scheme)
-    faunaDbConfig.scheme = commander_1.default.scheme;
+console.log(faunaDbConfig, secretEnvVariableName, MIGRATION_FOLDER, commander_1.default.envFile);
+// if (program.domain) faunaDbConfig.domain = program.domain;
+// if (program.port) faunaDbConfig.port = program.port;
+// if (program.scheme) faunaDbConfig.scheme = program.scheme;
 var client = new faunadb_1.default.Client(faunaDbConfig);
 commander_1.default
     .command("setup")

@@ -15,32 +15,39 @@ program.version("0.0.1").description("Fauna migrate tool")
   .option('--envFile <value>', 'Env file path')
   .option('--secretEnvVariableName <value>', 'Env variable name for FaunaDB Secret');
 program.parse(process.argv);
-  
-const MIGRATION_FOLDER = program.migrationFolder || "./migrations";
 
 const secretEnvVariableName = program.secretEnvVariableName || 'FAUNADB_SECRET';
 
-let secret = '';
-
+let envConfig: any;
 if (program.envFile) {
   const envResult = require('dotenv').config({ path: program.envFile });  
 
   if(envResult.error) {
     throw envResult.error;
   }
+  envConfig = envResult.parsed
 
-  secret = String(envResult.parsed[secretEnvVariableName]);
+  // secret = String(envResult.parsed[secretEnvVariableName]);
 } else {
-  secret = String(process.env[secretEnvVariableName]);
+  envConfig = process.env;
+  // secret = String(process.env[secretEnvVariableName]);
 }
 
+const MIGRATION_FOLDER = program.migrationFolder || envConfig['FAUNADB_MIGRATION_FOLDER']  || "./migrations";
+
 const faunaDbConfig: faunadb.ClientConfig = {
-  secret: secret
+  secret: envConfig[secretEnvVariableName],
+  domain: program.domain || envConfig['FAUNADB_DOMAIN'],
+  port: program.port || envConfig['FAUNADB_PORT'],
+  scheme: program.scheme || envConfig['FAUNADB_SCHEME'],
 };
 
-if (program.domain) faunaDbConfig.domain = program.domain;
-if (program.port) faunaDbConfig.port = program.port;
-if (program.scheme) faunaDbConfig.scheme = program.scheme;
+console.log(faunaDbConfig, secretEnvVariableName, MIGRATION_FOLDER, program.envFile);
+
+
+// if (program.domain) faunaDbConfig.domain = program.domain;
+// if (program.port) faunaDbConfig.port = program.port;
+// if (program.scheme) faunaDbConfig.scheme = program.scheme;
 
 const client = new faunadb.Client(faunaDbConfig);
 
