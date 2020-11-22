@@ -2,14 +2,27 @@
 
 import program from "commander";
 import faunadb from "faunadb";
+import minimist from 'minimist';
 import setupMigrations from "./setupMigrations";
 import createMigration from "./createMigration";
 import migrate from "./migrate";
 import rollback from "./rollback";
-const MIGRATION_FOLDER = "./migrations";
-const client = new faunadb.Client({
+
+const args = minimist(process.argv.slice(2));
+
+const MIGRATION_FOLDER = args['migration_folder'] ?? "./migrations";
+
+console.log(args);
+
+const faunaDbConfig: faunadb.ClientConfig = {
   secret: String(process.env.FAUNADB_SECRET)
-});
+};
+
+if (args['domain']) faunaDbConfig['domain'] = args['domain'];
+if (args['port']) faunaDbConfig['port'] = args['port'];
+if (args['scheme']) faunaDbConfig['scheme'] = args['scheme'];
+
+const client = new faunadb.Client(faunaDbConfig);
 
 export {
   setupMigrations,

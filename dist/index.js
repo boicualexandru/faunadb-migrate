@@ -6,6 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var commander_1 = __importDefault(require("commander"));
 var faunadb_1 = __importDefault(require("faunadb"));
+var minimist_1 = __importDefault(require("minimist"));
 var setupMigrations_1 = __importDefault(require("./setupMigrations"));
 exports.setupMigrations = setupMigrations_1.default;
 var createMigration_1 = __importDefault(require("./createMigration"));
@@ -14,11 +15,20 @@ var migrate_1 = __importDefault(require("./migrate"));
 exports.migrate = migrate_1.default;
 var rollback_1 = __importDefault(require("./rollback"));
 exports.rollback = rollback_1.default;
-var MIGRATION_FOLDER = "./migrations";
+var args = minimist_1.default(process.argv.slice(2));
+var MIGRATION_FOLDER = args['migration_folder'] ?  ? "./migrations" :  : ;
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
-var client = new faunadb_1.default.Client({
+console.log(args);
+var faunaDbConfig = {
     secret: String(process.env.FAUNADB_SECRET)
-});
+};
+if (args['domain'])
+    faunaDbConfig['domain'] = args['domain'];
+if (args['port'])
+    faunaDbConfig['port'] = args['port'];
+if (args['scheme'])
+    faunaDbConfig['scheme'] = args['scheme'];
+var client = new faunadb_1.default.Client(faunaDbConfig);
 commander_1.default.version("0.0.1").description("Fauna migrate tool");
 commander_1.default
     .command("setup")
