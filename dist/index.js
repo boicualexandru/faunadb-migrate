@@ -15,11 +15,11 @@ exports.migrate = migrate_1.default;
 var rollback_1 = __importDefault(require("./rollback"));
 exports.rollback = rollback_1.default;
 commander_1.default.version("0.0.1").description("Fauna migrate tool")
-    .option('--domain', 'Domain')
-    .option('--port', 'Port')
-    .option('--scheme', 'Scheme')
-    .option('--migrationFolder', 'Migrations folder')
-    .option('--secretEnvVariableName', 'Env variable name for FaunaDB Secret');
+    .option('--domain <value>', 'Domain')
+    .option('--port <value>', 'Port')
+    .option('--scheme <value>', 'Scheme')
+    .option('--migrationFolder <value>', 'Migrations folder')
+    .option('--secretEnvVariableName <value>', 'Env variable name for FaunaDB Secret');
 commander_1.default.parse(process.argv);
 var MIGRATION_FOLDER = commander_1.default.migrationFolder || "./migrations";
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;

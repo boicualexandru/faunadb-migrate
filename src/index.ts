@@ -8,11 +8,11 @@ import migrate from "./migrate";
 import rollback from "./rollback";
 
 program.version("0.0.1").description("Fauna migrate tool")
-  .option('--domain', 'Domain')
-  .option('--port', 'Port')
-  .option('--scheme', 'Scheme')
-  .option('--migrationFolder', 'Migrations folder')
-  .option('--secretEnvVariableName', 'Env variable name for FaunaDB Secret');
+  .option('--domain <value>', 'Domain')
+  .option('--port <value>', 'Port')
+  .option('--scheme <value>', 'Scheme')
+  .option('--migrationFolder <value>', 'Migrations folder')
+  .option('--secretEnvVariableName <value>', 'Env variable name for FaunaDB Secret');
 program.parse(process.argv);
   
 const MIGRATION_FOLDER = program.migrationFolder || "./migrations";
