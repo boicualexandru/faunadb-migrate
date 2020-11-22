@@ -68,3 +68,4 @@ commander_1.default
     .command("rollback")
     .description("Run rollback")
     .action(function () { return rollback_1.default(MIGRATION_FOLDER, client); });
+commander_1.default.parse(process.argv);

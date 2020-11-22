@@ -79,3 +79,5 @@ program
   .command("rollback")
   .description("Run rollback")
   .action(() => rollback(MIGRATION_FOLDER, client));
+
+program.parse(process.argv);
