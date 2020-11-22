@@ -34,10 +34,19 @@ const MIGRATION_FOLDER = program.migrationFolder || envConfig['FAUNADB_MIGRATION
 
 const faunaDbConfig: faunadb.ClientConfig = {
   secret: envConfig[secretVar],
-  domain: program.domain || envConfig['FAUNADB_DOMAIN'],
-  port: program.port || envConfig['FAUNADB_PORT'],
-  scheme: program.scheme || envConfig['FAUNADB_SCHEME'],
 };
+
+const domain = program.domain || envConfig['FAUNADB_DOMAIN'];
+if (domain) faunaDbConfig.domain = String(domain);
+
+const port = program.port || envConfig['FAUNADB_PORT'];
+if (port) faunaDbConfig.port = parseInt(port);
+
+const scheme = program.scheme || envConfig['FAUNADB_SCHEME'];
+if (scheme) faunaDbConfig.scheme = String(scheme) as "http" | "https" | undefined;
+
+console.log(faunaDbConfig);
+
 
 const client = new faunadb.Client(faunaDbConfig);
 

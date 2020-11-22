@@ -38,10 +38,17 @@ var MIGRATION_FOLDER = commander_1.default.migrationFolder || envConfig['FAUNADB
 exports.MIGRATION_FOLDER = MIGRATION_FOLDER;
 var faunaDbConfig = {
     secret: envConfig[secretVar],
-    domain: commander_1.default.domain || envConfig['FAUNADB_DOMAIN'],
-    port: commander_1.default.port || envConfig['FAUNADB_PORT'],
-    scheme: commander_1.default.scheme || envConfig['FAUNADB_SCHEME'],
 };
+var domain = commander_1.default.domain || envConfig['FAUNADB_DOMAIN'];
+if (domain)
+    faunaDbConfig.domain = String(domain);
+var port = commander_1.default.port || envConfig['FAUNADB_PORT'];
+if (port)
+    faunaDbConfig.port = parseInt(port);
+var scheme = commander_1.default.scheme || envConfig['FAUNADB_SCHEME'];
+if (scheme)
+    faunaDbConfig.scheme = String(scheme);
+console.log(faunaDbConfig);
 var client = new faunadb_1.default.Client(faunaDbConfig);
 commander_1.default
     .command("setup")
